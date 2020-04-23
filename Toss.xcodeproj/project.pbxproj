@@ -15,6 +15,9 @@
 		0A9E7D912444FD6200793054 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E7D8F2444FD6200793054 /* LaunchScreen.storyboard */; };
 		0A9E7D9C2444FD6200793054 /* TossTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7D9B2444FD6200793054 /* TossTests.swift */; };
 		0A9E7DA72444FD6200793054 /* TossUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7DA62444FD6200793054 /* TossUITests.swift */; };
+		0A9E7DB52444FDAE00793054 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7DB42444FDAE00793054 /* Grid.swift */; };
+		0A9E7DB92445238D00793054 /* Solocup.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E7DB82445238D00793054 /* Solocup.usdz */; };
+		0A9E7DBB244523F100793054 /* Cup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7DBA244523F100793054 /* Cup.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		0A9E7DA22444FD6200793054 /* TossUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TossUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9E7DA62444FD6200793054 /* TossUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TossUITests.swift; sourceTree = "<group>"; };
 		0A9E7DA82444FD6200793054 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0A9E7DB42444FDAE00793054 /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		0A9E7DB82445238D00793054 /* Solocup.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Solocup.usdz; sourceTree = "<group>"; };
+		0A9E7DBA244523F100793054 /* Cup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cup.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +105,9 @@
 		0A9E7D832444FD6000793054 /* Toss */ = {
 			isa = PBXGroup;
 			children = (
+				0A9E7DB42444FDAE00793054 /* Grid.swift */,
+				0A9E7DBA244523F100793054 /* Cup.swift */,
+				0A9E7DB82445238D00793054 /* Solocup.usdz */,
 				0A9E7D842444FD6000793054 /* AppDelegate.swift */,
 				0A9E7D862444FD6000793054 /* art.scnassets */,
 				0A9E7D882444FD6000793054 /* ViewController.swift */,
@@ -236,6 +245,7 @@
 				0A9E7D912444FD6200793054 /* LaunchScreen.storyboard in Resources */,
 				0A9E7D8E2444FD6200793054 /* Assets.xcassets in Resources */,
 				0A9E7D8C2444FD6000793054 /* Main.storyboard in Resources */,
+				0A9E7DB92445238D00793054 /* Solocup.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,8 +270,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9E7DBB244523F100793054 /* Cup.swift in Sources */,
 				0A9E7D892444FD6000793054 /* ViewController.swift in Sources */,
 				0A9E7D852444FD6000793054 /* AppDelegate.swift in Sources */,
+				0A9E7DB52444FDAE00793054 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,7 +378,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -420,7 +432,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
