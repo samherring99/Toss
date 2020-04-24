@@ -13,19 +13,29 @@ import RealityKit
 import Combine
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-
+    
     @IBOutlet var sceneView: ARSCNView!
+    let configuration = ARWorldTrackingConfiguration()
     var grids = [Grid]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let setButton = UIButton()
+        setButton.setTitle("Table is Set", for: .normal)
+        setButton.setTitleColor(UIColor.white, for: .normal)
+        setButton.titleLabel?.textAlignment = .center
+        setButton.frame = CGRect(x: self.view.frame.width / 3.0, y: self.view.frame.height - self.view.frame.height/8.0, width: 100.0, height: 20.0)
+        setButton.addTarget(self, action: #selector(setTable), for: .touchUpInside)
+        
+        self.view.addSubview(setButton)
         
         // Set the view's delegate
         sceneView.delegate = self
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
-        sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
+        //sceneView.debugOptions = ARSCNDebugOptions.showFeaturePoints
         
         // Create a new scene
         let scene = SCNScene()
@@ -57,16 +67,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //})
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         //configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -92,6 +107,58 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 */
     
+    @objc func setTable() {
+        print("Set")
+        if grids.count > 0 {
+            let (min, max) = (grids.first?.planeGeometry.boundingBox)!
+            let c1 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
+            let c2 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
+            let c3 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
+            let c4 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
+            
+            
+            let bottomLeft = SCNVector3(min.x, min.y, 0)
+            let topRight = SCNVector3(max.x, max.y, 0)
+
+            let topLeft = SCNVector3(min.x, max.y, 0)
+            let bottomRight = SCNVector3(max.x, min.y, 0)
+            
+//            grids.first?.planeGeometry.position
+//
+            let worldBottomLeft = c1.convertPosition(bottomLeft, to: grids.first)
+//            let worldTopRight = grids.first?.planeGeometry.convertPosition(topRight, to: grids.first)
+//
+//            let worldTopLeft = grids.first?.planeGeometry.convertPosition(topLeft, to: grids.first)
+//            let worldBottomRight = grids.first?.planeGeometry.convertPosition(bottomRight, to: grids.first)
+            
+            print(min)
+            print(max)
+            var cupScale = SCNVector3()
+            cupScale.x = 2.0 * (grids.first?.anchor.extent.x)! / 100.0
+            cupScale.y = 2.0 * (grids.first?.anchor.extent.x)! / 100.0
+            cupScale.z = 2.0 * (grids.first?.anchor.extent.x)! / 100.0
+            c1.scale = cupScale
+            c2.scale = cupScale
+            c3.scale = cupScale
+            c4.scale = cupScale
+
+            c1.position = SCNVector3(min.x, (grids.first?.anchor.center.y)!, min.y)
+            c2.position = SCNVector3(min.x, (grids.first?.anchor.center.y)!, max.y)
+            c3.position = SCNVector3(max.x, (grids.first?.anchor.center.y)!, min.y)
+            c4.position = SCNVector3(max.x, (grids.first?.anchor.center.y)!, max.y)
+            
+            grids.first?.addChildNode(c1)
+            grids.first?.addChildNode(c2)
+            grids.first?.addChildNode(c3)
+            grids.first?.addChildNode(c4)
+        }
+        
+        
+        configuration.planeDetection = [] //empty array (as opposed to .horizontal .vertical)
+        sceneView.session.run(configuration)
+    }
+    
+    
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
@@ -109,28 +176,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         let grid = Grid(anchor: anchor as! ARPlaneAnchor)
-        let c1 = Cup(anchor: anchor as! ARPlaneAnchor)
-        let c2 = Cup(anchor: anchor as! ARPlaneAnchor)
-        let c3 = Cup(anchor: anchor as! ARPlaneAnchor)
-        let c4 = Cup(anchor: anchor as! ARPlaneAnchor)
         print(grid.planeGeometry.width)
-        c1.scale = SCNVector3(2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0))
-        c2.scale = SCNVector3(2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0))
-        c3.scale = SCNVector3(2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0))
-        c4.scale = SCNVector3(2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0), 2.0 * Float(grid.anchor.extent.x / 100.0))
-        //c.position = SCNVector3(grid.anchor.center.x + Float(grid.planeGeometry.height / 2.0), grid.anchor.center.y, grid.anchor.center.z  + Float(grid.planeGeometry.width / 2.0))
-        self.grids.append(grid)
-        c1.position = SCNVector3(x: grid.anchor.center.x + grid.anchor.extent.x, y: grid.anchor.center.y, z: grid.anchor.center.z - grid.anchor.extent.z)
-        c2.position = SCNVector3(x: grid.anchor.center.x - grid.anchor.extent.x, y: grid.anchor.center.y, z: grid.anchor.center.z - grid.anchor.extent.z)
-        c3.position = SCNVector3(x: grid.anchor.center.x - grid.anchor.extent.x, y: grid.anchor.center.y, z: grid.anchor.center.z + grid.anchor.extent.z)
-        c4.position = SCNVector3(x: grid.anchor.center.x + grid.anchor.extent.x, y: grid.anchor.center.y, z: grid.anchor.center.z + grid.anchor.extent.z)
-        node.addChildNode(grid)
-        grid.addChildNode(c1)
-        grid.addChildNode(c2)
-        grid.addChildNode(c3)
-        grid.addChildNode(c4)
 
+        self.grids.append(grid)
+
+        node.addChildNode(grid)
+        
     }
+    
     // 2.
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         let grid = self.grids.filter { grid in
