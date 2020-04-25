@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A5F212A2453472600E7F811 /* Die.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 0A5F21292453472600E7F811 /* Die.usdz */; };
+		0A5F212C24534ED600E7F811 /* Die.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5F212B24534ED600E7F811 /* Die.swift */; };
 		0A9E7D852444FD6000793054 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7D842444FD6000793054 /* AppDelegate.swift */; };
 		0A9E7D872444FD6000793054 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E7D862444FD6000793054 /* art.scnassets */; };
 		0A9E7D892444FD6000793054 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7D882444FD6000793054 /* ViewController.swift */; };
@@ -38,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A5F21292453472600E7F811 /* Die.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Die.usdz; sourceTree = "<group>"; };
+		0A5F212B24534ED600E7F811 /* Die.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Die.swift; sourceTree = "<group>"; };
 		0A9E7D812444FD6000793054 /* Toss.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Toss.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9E7D842444FD6000793054 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A9E7D862444FD6000793054 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 			children = (
 				0A9E7DB42444FDAE00793054 /* Grid.swift */,
 				0A9E7DBA244523F100793054 /* Cup.swift */,
+				0A5F212B24534ED600E7F811 /* Die.swift */,
+				0A5F21292453472600E7F811 /* Die.usdz */,
 				0A9E7DB82445238D00793054 /* Solocup.usdz */,
 				0A9E7D842444FD6000793054 /* AppDelegate.swift */,
 				0A9E7D862444FD6000793054 /* art.scnassets */,
@@ -241,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A5F212A2453472600E7F811 /* Die.usdz in Resources */,
 				0A9E7D872444FD6000793054 /* art.scnassets in Resources */,
 				0A9E7D912444FD6200793054 /* LaunchScreen.storyboard in Resources */,
 				0A9E7D8E2444FD6200793054 /* Assets.xcassets in Resources */,
@@ -273,6 +280,7 @@
 				0A9E7DBB244523F100793054 /* Cup.swift in Sources */,
 				0A9E7D892444FD6000793054 /* ViewController.swift in Sources */,
 				0A9E7D852444FD6000793054 /* AppDelegate.swift in Sources */,
+				0A5F212C24534ED600E7F811 /* Die.swift in Sources */,
 				0A9E7DB52444FDAE00793054 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -449,6 +457,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GT462FHWZ5;
 				INFOPLIST_FILE = Toss/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -467,6 +476,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GT462FHWZ5;
 				INFOPLIST_FILE = Toss/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

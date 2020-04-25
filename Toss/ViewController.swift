@@ -16,6 +16,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     let configuration = ARWorldTrackingConfiguration()
+    let dieNodeName = "die"
     var grids = [Grid]()
     
     override func viewDidLoad() {
@@ -25,7 +26,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         setButton.setTitle("Table is Set", for: .normal)
         setButton.setTitleColor(UIColor.white, for: .normal)
         setButton.titleLabel?.textAlignment = .center
-        setButton.frame = CGRect(x: self.view.frame.width / 3.0, y: self.view.frame.height - self.view.frame.height/8.0, width: 100.0, height: 20.0)
+        setButton.frame = CGRect(x: self.view.frame.width / 3.0, y: self.view.frame.height - self.view.frame.height/8.0, width: 100.0, height: 40.0)
         setButton.addTarget(self, action: #selector(setTable), for: .touchUpInside)
         
         self.view.addSubview(setButton)
@@ -42,6 +43,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
         sceneView.scene = scene
+        
+        sceneView.debugOptions = [.showPhysicsShapes]
+        
+        //addTapGestureToSceneView()
         
         //var cancel: AnyCancellable? = nil
         
@@ -107,6 +112,67 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 */
     
+    func addTapGestureToSceneView() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.addDieToSceneView(withGestureRecognizer:)))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    let CollisionCategoryDie = 1 << 1
+    let CollisionCategoryTable = 1 << 2
+
+    @objc func addDieToSceneView(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        let tapLocation = recognizer.location(in: sceneView)
+        let hitTestResults = sceneView.hitTest(tapLocation, types: .existingPlaneUsingExtent)
+        guard let hitTestResult = hitTestResults.first else { return }
+        
+//        let translation = hitTestResult.worldTransform.translation
+//        let x = translation.x
+//        let y = translation.y + 0.1
+//        let z = translation.z
+        
+        print("Tapped")
+        
+        let die = Die(anchor: grids.first!.anchor)
+        die.scale = SCNVector3(5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0)
+        
+//        die.physicsBody?.categoryBitMask = CollisionCategoryDie
+//        grids.first?.physicsBody?.categoryBitMask = CollisionCategoryTable
+//        die.physicsBody?.collisionBitMask = CollisionCategoryTable
+//        grids.first?.physicsBody?.collisionBitMask = CollisionCategoryDie
+        
+        die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        //die.physicsBody?.continuousCollisionDetectionThreshold = 0.025
+        //die.physicsBody?.collisionBitMask = 2
+        //die.position = SCNVector3(die.position.x, die.position.y + 10.0, die.position.z)
+        die.referenceNode1.position = SCNVector3(die.referenceNode1.position.x, 50.0, die.referenceNode1.position.z)
+        //print(grids.first?.boundingBox)
+        let box = SCNBox(width: CGFloat((grids.first?.anchor.extent.x)!) + die.planeGeometry.width, height: 0.0, length: CGFloat((grids.first?.anchor.extent.z)!) + die.planeGeometry.width, chamferRadius: 0)
+        //print(grids.first!.boundingBox)
+        //grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: box, options: nil))
+        grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        //grids.first?.physicsBody?.categoryBitMask = 2
+        grids.first?.physicsBody?.restitution = 0.80
+        grids.first?.addChildNode(die)
+        
+        die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        die.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
+        die.referenceNode1.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
+        die.referenceNode1.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        
+        // CHANGE DIE SIZE A LITTLE BIGGER, FIX LANDING AND BOUNCING SHIT WITH COLLISION
+        // ADD THROWING, CATCHING, BOUNCING, LANDING, ETC.
+        
+//        guard let rocketshipScene = SCNScene(named: "rocketship.scn"),
+//            let rocketshipNode = rocketshipScene.rootNode.childNode(withName: "rocketship", recursively: false)
+//            else { return }
+        
+        //rocketshipNode.position = SCNVector3(x,y,z)
+        
+        // TODO: Attach physics body to rocketship node
+        
+        //sceneView.scene.rootNode.addChildNode(rocketshipNode)
+    }
+    
     @objc func setTable() {
         print("Set")
         if grids.count > 0 {
@@ -115,21 +181,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let c2 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
             let c3 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
             let c4 = Cup(anchor: grids.first?.anchor as! ARPlaneAnchor)
-            
-            
-            let bottomLeft = SCNVector3(min.x, min.y, 0)
-            let topRight = SCNVector3(max.x, max.y, 0)
-
-            let topLeft = SCNVector3(min.x, max.y, 0)
-            let bottomRight = SCNVector3(max.x, min.y, 0)
-            
-//            grids.first?.planeGeometry.position
-//
-            let worldBottomLeft = c1.convertPosition(bottomLeft, to: grids.first)
-//            let worldTopRight = grids.first?.planeGeometry.convertPosition(topRight, to: grids.first)
-//
-//            let worldTopLeft = grids.first?.planeGeometry.convertPosition(topLeft, to: grids.first)
-//            let worldBottomRight = grids.first?.planeGeometry.convertPosition(bottomRight, to: grids.first)
             
             print(min)
             print(max)
@@ -142,15 +193,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             c3.scale = cupScale
             c4.scale = cupScale
 
-            c1.position = SCNVector3(min.x, (grids.first?.anchor.center.y)!, min.y)
-            c2.position = SCNVector3(min.x, (grids.first?.anchor.center.y)!, max.y)
-            c3.position = SCNVector3(max.x, (grids.first?.anchor.center.y)!, min.y)
-            c4.position = SCNVector3(max.x, (grids.first?.anchor.center.y)!, max.y)
+            c1.position = SCNVector3(min.x + Float(c1.planeGeometry.width/2.0), (grids.first?.anchor.center.y)!, min.y + Float(c1.planeGeometry.width/2.0))
+            c2.position = SCNVector3(min.x + Float(c2.planeGeometry.width/2.0), (grids.first?.anchor.center.y)!, max.y - Float(c2.planeGeometry.width/2.0))
+            c3.position = SCNVector3(max.x - Float(c3.planeGeometry.width/2.0), (grids.first?.anchor.center.y)!, min.y + Float(c3.planeGeometry.width/2.0))
+            c4.position = SCNVector3(max.x - Float(c4.planeGeometry.width/2.0), (grids.first?.anchor.center.y)!, max.y - Float(c4.planeGeometry.width/2.0))
             
             grids.first?.addChildNode(c1)
             grids.first?.addChildNode(c2)
             grids.first?.addChildNode(c3)
             grids.first?.addChildNode(c4)
+            
+            addTapGestureToSceneView()
         }
         
         
@@ -196,4 +249,5 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         foundGrid.update(anchor: anchor as! ARPlaneAnchor)
     }
+
 }
