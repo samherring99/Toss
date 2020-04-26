@@ -10,17 +10,23 @@ import UIKit
 import SceneKit
 import ARKit
 import RealityKit
+import CoreMotion
 import Combine
 
 class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     let configuration = ARWorldTrackingConfiguration()
+    let manager = CMMotionManager()
     let dieNodeName = "die"
     var grids = [Grid]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard manager.isAccelerometerAvailable else {
+            return
+        }
         
         let setButton = UIButton()
         setButton.setTitle("Table is Set", for: .normal)
@@ -44,7 +50,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the scene to the view
         sceneView.scene = scene
         
-        sceneView.debugOptions = [.showPhysicsShapes]
+        //sceneView.debugOptions = [.showPhysicsShapes]
         
         //addTapGestureToSceneView()
         
@@ -81,6 +87,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         // Run the view's session
         sceneView.session.run(configuration)
+        manager.startAccelerometerUpdates()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -130,7 +137,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 //        let y = translation.y + 0.1
 //        let z = translation.z
         
+        let cameraNode = sceneView.pointOfView
+        
         print("Tapped")
+        print(manager.accelerometerData?.acceleration)
+        print(cameraNode?.position)
         
         let die = Die(anchor: grids.first!.anchor)
         die.scale = SCNVector3(5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0)
@@ -155,7 +166,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //die.physicsBody?.continuousCollisionDetectionThreshold = 0.025
         //die.physicsBody?.collisionBitMask = 2
         //die.position = SCNVector3(die.position.x, die.position.y + 10.0, die.position.z)
-        die.position = SCNVector3(die.referenceNode1.position.x, 5.0, die.referenceNode1.position.z)
+        
+        
+        //die.position = SCNVector3(die.referenceNode1.position.x, 5.0, die.referenceNode1.position.z)
+        
+        
+        let randomZ = Float.random(in: 0.0...1.0)
+        let randomY = Float.random(in: 0.0...1.0)
+        // 2
+        let force = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
+        
+        // Apply force
+        die.position = cameraNode?.position as! SCNVector3
+        die.physicsBody?.applyForce(force, at: cameraNode!.position, asImpulse: true)
+        
+        
         //die.referenceNode1.position = die.position
         //print(grids.first?.boundingBox)
         let box = SCNBox(width: CGFloat((grids.first?.anchor.extent.x)!) + die.planeGeometry.width, height: 0.0, length: CGFloat((grids.first?.anchor.extent.z)!) + die.planeGeometry.width, chamferRadius: 2.0)
@@ -163,7 +188,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: box, options: nil))
         grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
         //grids.first?.physicsBody?.categoryBitMask = 2
-        grids.first?.physicsBody?.restitution = 0.362
+        grids.first?.physicsBody?.restitution = 0.262
         grids.first?.addChildNode(die)
         
         die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
