@@ -32,7 +32,12 @@ class Die : SCNNode {
         let gp: Grid = self.parent as! Grid
         
         let planeNode = self.childNodes.first!
-        planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: self.planeGeometry, options: nil))
+        //planeNode.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: self.planeGeometry, options: nil))
+        referenceNode1?.scale = self.scale
+        referenceNode1.physicsBody = self.physicsBody
+        referenceNode1.position = self.position
+        referenceNode1.rotation = self.rotation
+        referenceNode1.eulerAngles = self.eulerAngles
     }
     
     private func setup() {
@@ -47,13 +52,14 @@ class Die : SCNNode {
         
         //planeGeometry.materials = [material]
         //let planeNode = SCNNode(geometry: self.planeGeometry)
-        referenceNode1?.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: self.planeGeometry, options: nil))
-        referenceNode1?.physicsBody?.collisionBitMask = 2
+        //referenceNode1?.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: self.planeGeometry, options: nil))
+        //referenceNode1?.physicsBody?.collisionBitMask = 2
         
-        //referenceNode?.scale = SCNVector3(0.02, 0.02, 0.02)
+        //referenceNode1?.scale = SCNVector3(0.02, 0.02, 0.02)
         
-        referenceNode1?.position = SCNVector3Make(anchor.center.x, 0.0, anchor.center.z);
-        referenceNode1?.transform = SCNMatrix4MakeRotation(Float(0.0), 1.0, 0.0, 0.0);
+        //referenceNode1?.position = SCNVector3Make(anchor.center.x, 50.0, anchor.center.z);
+        //self.position = SCNVector3Make((referenceNode1?.position.x)!, 50.0, (referenceNode1?.position.z)!);
+        //referenceNode1?.transform = SCNMatrix4MakeRotation(Float(0.0), 1.0, 0.0, 0.0);
 
         addChildNode(referenceNode1!)
     }

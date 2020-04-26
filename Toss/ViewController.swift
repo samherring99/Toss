@@ -135,23 +135,35 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let die = Die(anchor: grids.first!.anchor)
         die.scale = SCNVector3(5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0)
         
+        //die.position.y = die.position.y + 50.0
+        
+        let box2 = SCNBox(width: die.planeGeometry.width, height: die.planeGeometry.width, length: die.planeGeometry.width, chamferRadius: 0)
+        
+        let boxBodyShape = SCNPhysicsShape(geometry: SCNBox(width: die.planeGeometry.width, height: die.planeGeometry.width, length: die.planeGeometry.width, chamferRadius: 0.3),
+        options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.boundingBox])
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: box2, options: nil))
+        //die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        
 //        die.physicsBody?.categoryBitMask = CollisionCategoryDie
 //        grids.first?.physicsBody?.categoryBitMask = CollisionCategoryTable
 //        die.physicsBody?.collisionBitMask = CollisionCategoryTable
 //        grids.first?.physicsBody?.collisionBitMask = CollisionCategoryDie
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: box2, options: nil))
         
-        die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
         //die.physicsBody?.continuousCollisionDetectionThreshold = 0.025
         //die.physicsBody?.collisionBitMask = 2
         //die.position = SCNVector3(die.position.x, die.position.y + 10.0, die.position.z)
-        die.referenceNode1.position = SCNVector3(die.referenceNode1.position.x, 50.0, die.referenceNode1.position.z)
+        die.position = SCNVector3(die.referenceNode1.position.x, 5.0, die.referenceNode1.position.z)
+        //die.referenceNode1.position = die.position
         //print(grids.first?.boundingBox)
-        let box = SCNBox(width: CGFloat((grids.first?.anchor.extent.x)!) + die.planeGeometry.width, height: 0.0, length: CGFloat((grids.first?.anchor.extent.z)!) + die.planeGeometry.width, chamferRadius: 0)
+        let box = SCNBox(width: CGFloat((grids.first?.anchor.extent.x)!) + die.planeGeometry.width, height: 0.0, length: CGFloat((grids.first?.anchor.extent.z)!) + die.planeGeometry.width, chamferRadius: 2.0)
         //print(grids.first!.boundingBox)
         //grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: box, options: nil))
         grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
         //grids.first?.physicsBody?.categoryBitMask = 2
-        grids.first?.physicsBody?.restitution = 0.80
+        grids.first?.physicsBody?.restitution = 0.362
         grids.first?.addChildNode(die)
         
         die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
