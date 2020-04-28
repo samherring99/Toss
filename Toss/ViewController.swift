@@ -173,12 +173,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         let randomZ = Float.random(in: 0.0...1.0)
         let randomY = Float.random(in: 0.0...1.0)
+        
+        print(cameraNode?.worldFront)
+        
         // 2
-        let force = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
+        let original = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
+        
+        //let original = SCNVector3(x: 1.67, y: 13.83, z: -18.3)
+        let newForce = SCNVector3(1.1 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!)
+        let force = simd_make_float4(2.0 * (cameraNode?.worldFront.x)!,  5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!, 0)
+        let rotatedForce = simd_mul(sceneView.session.currentFrame!.camera.transform, force)
+
+        let vectorForce = SCNVector3(x:rotatedForce.x, y:rotatedForce.y, z:rotatedForce.z)
+        //die.physicsBody?.applyForce(vectorForce, asImpulse: true)
         
         // Apply force
         die.position = cameraNode?.position as! SCNVector3
-        die.physicsBody?.applyForce(force, at: cameraNode!.position, asImpulse: true)
+        die.physicsBody?.applyForce(newForce, at: cameraNode!.position, asImpulse: true)
         
         
         //die.referenceNode1.position = die.position
