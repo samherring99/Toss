@@ -6,6 +6,9 @@
 //  Copyright © 2020 Sam Herring. All rights reserved.
 //
 
+// For single player, essentially build turn system off of CPU ghost playes in other 3 spots.
+// Will entail setting up gameplay framework, spawning die at opponent positions, and having those die move with a somewhat randomized force vector towards the table.
+
 import UIKit
 import SceneKit
 import ARKit
