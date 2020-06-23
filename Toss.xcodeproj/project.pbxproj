@@ -20,6 +20,8 @@
 		0A9E7DB52444FDAE00793054 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7DB42444FDAE00793054 /* Grid.swift */; };
 		0A9E7DB92445238D00793054 /* Solocup.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E7DB82445238D00793054 /* Solocup.usdz */; };
 		0A9E7DBB244523F100793054 /* Cup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E7DBA244523F100793054 /* Cup.swift */; };
+		0ACBCF2224A2B12400F96781 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACBCF2124A2B12400F96781 /* MenuView.swift */; };
+		0ACBCF2424A2B19200F96781 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACBCF2324A2B19200F96781 /* MenuViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		0A9E7DB42444FDAE00793054 /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		0A9E7DB82445238D00793054 /* Solocup.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Solocup.usdz; sourceTree = "<group>"; };
 		0A9E7DBA244523F100793054 /* Cup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cup.swift; sourceTree = "<group>"; };
+		0ACBCF2124A2B12400F96781 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		0ACBCF2324A2B19200F96781 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +121,9 @@
 				0A9E7D842444FD6000793054 /* AppDelegate.swift */,
 				0A9E7D862444FD6000793054 /* art.scnassets */,
 				0A9E7D882444FD6000793054 /* ViewController.swift */,
+				0ACBCF2324A2B19200F96781 /* MenuViewController.swift */,
 				0A9E7D8A2444FD6000793054 /* Main.storyboard */,
+				0ACBCF2124A2B12400F96781 /* MenuView.swift */,
 				0A9E7D8D2444FD6200793054 /* Assets.xcassets */,
 				0A9E7D8F2444FD6200793054 /* LaunchScreen.storyboard */,
 				0A9E7D922444FD6200793054 /* Info.plist */,
@@ -206,7 +212,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Sam Herring";
 				TargetAttributes = {
 					0A9E7D802444FD6000793054 = {
@@ -278,7 +284,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A9E7DBB244523F100793054 /* Cup.swift in Sources */,
+				0ACBCF2224A2B12400F96781 /* MenuView.swift in Sources */,
 				0A9E7D892444FD6000793054 /* ViewController.swift in Sources */,
+				0ACBCF2424A2B19200F96781 /* MenuViewController.swift in Sources */,
 				0A9E7D852444FD6000793054 /* AppDelegate.swift in Sources */,
 				0A5F212C24534ED600E7F811 /* Die.swift in Sources */,
 				0A9E7DB52444FDAE00793054 /* Grid.swift in Sources */,
@@ -362,6 +370,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -386,7 +395,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -422,6 +431,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -440,7 +450,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
