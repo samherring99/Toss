@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17132" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="XFr-7I-A5q">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17132" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -14,7 +14,7 @@
             <objects>
                 <viewController id="XFr-7I-A5q" customClass="MenuViewController" customModule="Toss" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
-                        <segue destination="BV1-FR-VrT" kind="show" identifier="ShowCameraSegue" id="Dcq-28-TGI"/>
+                        <segue destination="BV1-FR-VrT" kind="show" identifier="ShowCameraSegue" destinationCreationSelector="openMultiplayerSession" id="Dcq-28-TGI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ALk-mj-6Np" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

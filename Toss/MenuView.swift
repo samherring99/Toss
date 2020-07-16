@@ -33,7 +33,6 @@ struct MenuView: View {
                 .padding(.vertical, 20)
                 
                 Button("With the bros") {
-                    print("Poof")
                 }.foregroundColor(.white)
                 .font(.system(size: 32.0))
                 .padding(.vertical, 20)

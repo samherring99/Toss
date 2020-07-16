@@ -21,8 +21,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     let configuration = ARWorldTrackingConfiguration()
     let manager = CMMotionManager()
+    let queue = OperationQueue()
     let dieNodeName = "die"
     var grids = [Grid]()
+    
+    //create dataframes
+    
+    var throwing = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +95,34 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         // Run the view's session
         sceneView.session.run(configuration)
-        manager.startAccelerometerUpdates()
+        //manager.startAccelerometerUpdates()
+        
+        manager.deviceMotionUpdateInterval = 1.0 / 10 // 1/50 = 50Hz
+        manager.startDeviceMotionUpdates(to: queue) { (deviceMotion: CMDeviceMotion?, error: Error?) in
+            if error != nil {
+                print("Encountered error: \(error!)")
+            }
+            
+            
+            //self.a = deviceMotion!.userAcceleration
+            
+            //self.r = deviceMotion!.rotationRate
+
+            if deviceMotion != nil {
+                //self.processDeviceMotion(deviceMotion!) // Start processing device motion.
+                
+                if self.throwing {
+                    print(deviceMotion?.userAcceleration)
+                    print(deviceMotion?.rotationRate)
+                    
+                    // fill dataframes
+                }
+                
+                
+            }
+            
+            //self.sendDatatoDelegate()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -124,11 +156,151 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func addTapGestureToSceneView() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.addDieToSceneView(withGestureRecognizer:)))
-        sceneView.addGestureRecognizer(tapGestureRecognizer)
+        //sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    func addThrowGesturetoSceneView() {
+        let gsr = UITapGestureRecognizer(target: self, action: #selector(ViewController.addDieThrowToScene(withGestureRecognizer:)))
+        
+        gsr.numberOfTapsRequired = 1
+        
+        sceneView.addGestureRecognizer(gsr)
+        
     }
     
     let CollisionCategoryDie = 1 << 1
     let CollisionCategoryTable = 1 << 2
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("started")
+        // This runs once at the beginning of the throw, reset dataframes and log world front
+        print(sceneView.pointOfView?.worldFront)
+        throwing = true
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("ended")
+        // Release die with force and rotation
+        throwing = false
+    }
+    
+    @objc func addDieThrowToScene(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        
+        //let tapLocation = recognizer.location(in: sceneView)
+        //let hitTestResults = sceneView.hitTest(tapLocation, types: .existingPlaneUsingExtent)
+        //guard let hitTestResult = hitTestResults.first else { return }
+        
+//        let translation = hitTestResult.worldTransform.translation
+//        let x = translation.x
+//        let y = translation.y + 0.1
+//        let z = translation.z
+        
+        // CLEAN BELOW THIS ALL RUNS AT THE END
+        
+        let cameraNode = sceneView.pointOfView
+        
+        
+        //print("Started")
+        
+        print(cameraNode?.position)
+        
+        // Setting up die shape and physics body
+        
+        let die = Die(anchor: grids.first!.anchor)
+        die.scale = SCNVector3(5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0)
+        
+        //die.position.y = die.position.y + 50.0
+        
+        let box2 = SCNBox(width: die.planeGeometry.width, height: die.planeGeometry.width, length: die.planeGeometry.width, chamferRadius: 0)
+        
+        let boxBodyShape = SCNPhysicsShape(geometry: SCNBox(width: die.planeGeometry.width, height: die.planeGeometry.width, length: die.planeGeometry.width, chamferRadius: 0.3),
+        options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.boundingBox])
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: box2, options: nil))
+        //die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        die.physicsBody = SCNPhysicsBody(type: .dynamic, shape: boxBodyShape)
+        
+        
+//        die.physicsBody?.categoryBitMask = CollisionCategoryDie
+//        grids.first?.physicsBody?.categoryBitMask = CollisionCategoryTable
+//        die.physicsBody?.collisionBitMask = CollisionCategoryTable
+//        grids.first?.physicsBody?.collisionBitMask = CollisionCategoryDie
+        //die.referenceNode1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: box2, options: nil))
+        
+        //die.physicsBody?.continuousCollisionDetectionThreshold = 0.025
+        //die.physicsBody?.collisionBitMask = 2
+        //die.position = SCNVector3(die.position.x, die.position.y + 10.0, die.position.z)
+        
+        
+        //die.position = SCNVector3(die.referenceNode1.position.x, 5.0, die.referenceNode1.position.z)
+        
+        // Force calculations
+        
+        print(cameraNode?.worldFront)
+        
+        // 2
+        let original = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
+        
+        //let original = SCNVector3(x: 1.67, y: 13.83, z: -18.3)
+        let newForce = SCNVector3(1.1 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!)
+        let force = simd_make_float4(2.0 * (cameraNode?.worldFront.x)!,  5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!, 0)
+        let rotatedForce = simd_mul(sceneView.session.currentFrame!.camera.transform, force)
+
+        let vectorForce = SCNVector3(x:rotatedForce.x, y:rotatedForce.y, z:rotatedForce.z)
+        //die.physicsBody?.applyForce(vectorForce, asImpulse: true)
+        
+        // Apply force
+        //die.position = cameraNode?.position as! SCNVector3
+        
+        
+        //die.physicsBody?.applyForce(newForce, at: cameraNode!.position, asImpulse: true)
+        
+        
+        //die.referenceNode1.position = die.position
+        //print(grids.first?.boundingBox)
+        let box = SCNBox(width: CGFloat((grids.first?.anchor.extent.x)!) + die.planeGeometry.width, height: 0.0, length: CGFloat((grids.first?.anchor.extent.z)!) + die.planeGeometry.width, chamferRadius: 2.0)
+        
+        
+        
+        //print(grids.first!.boundingBox)
+        //grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: box, options: nil))
+        grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        //grids.first?.physicsBody?.categoryBitMask = 2
+        grids.first?.physicsBody?.restitution = 0.262 // die bounce
+        
+        grids.first?.addChildNode(die)
+        
+        die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        die.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
+        
+        die.referenceNode1.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
+        die.referenceNode1.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        
+        if recognizer.state != .ended {
+            print("Held")
+        }
+        
+        print("Finished")
+        
+        throwing = false
+        
+        print(sceneView.pointOfView?.position)
+        
+        // create method for math on dataframes, apply force
+        
+        // CHANGE DIE SIZE A LITTLE BIGGER, FIX LANDING AND BOUNCING SHIT WITH COLLISION
+        // ADD THROWING, CATCHING, BOUNCING, LANDING, ETC.
+        
+//        guard let rocketshipScene = SCNScene(named: "rocketship.scn"),
+//            let rocketshipNode = rocketshipScene.rootNode.childNode(withName: "rocketship", recursively: false)
+//            else { return }
+        
+        //rocketshipNode.position = SCNVector3(x,y,z)
+        
+        // TODO: Attach physics body to rocketship node
+        
+        //sceneView.scene.rootNode.addChildNode(rocketshipNode)
+    }
 
     @objc func addDieToSceneView(withGestureRecognizer recognizer: UIGestureRecognizer) {
         let tapLocation = recognizer.location(in: sceneView)
@@ -210,6 +382,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         die.referenceNode1.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
         die.referenceNode1.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
         
+        
+        
         // CHANGE DIE SIZE A LITTLE BIGGER, FIX LANDING AND BOUNCING SHIT WITH COLLISION
         // ADD THROWING, CATCHING, BOUNCING, LANDING, ETC.
         
@@ -254,7 +428,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             grids.first?.addChildNode(c3)
             grids.first?.addChildNode(c4)
             
-            addTapGestureToSceneView()
+            //addTapGestureToSceneView()
+            addThrowGesturetoSceneView()
         }
         
         

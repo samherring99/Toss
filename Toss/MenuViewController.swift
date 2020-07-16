@@ -41,6 +41,13 @@ class MenuViewController: UIViewController {
         }
     }
     
+    func openMultiplayerSession(sender: Any?) {
+        performSegue(withIdentifier: "ShowCameraSegue", sender: self)
+    }
+    
+    static func openCamera() {
+    }
+    
 
     /*
     // MARK: - Navigation
