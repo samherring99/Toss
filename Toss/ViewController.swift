@@ -239,21 +239,24 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         print(cameraNode?.worldFront)
         
         // 2
-        let original = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
+        //let original = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
         
         //let original = SCNVector3(x: 1.67, y: 13.83, z: -18.3)
-        let newForce = SCNVector3(1.1 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!)
-        let force = simd_make_float4(2.0 * (cameraNode?.worldFront.x)!,  5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!, 0)
-        let rotatedForce = simd_mul(sceneView.session.currentFrame!.camera.transform, force)
+        let newForce = SCNVector3(1.1 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!) //AVERGAGE THESE WITH MEASURED VALUES?
+        //let force = simd_make_float4(2.0 * (cameraNode?.worldFront.x)!,  5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!, 0)
+        //let rotatedForce = simd_mul(sceneView.session.currentFrame!.camera.transform, force)
 
-        let vectorForce = SCNVector3(x:rotatedForce.x, y:rotatedForce.y, z:rotatedForce.z)
+        //let vectorForce = SCNVector3(x:rotatedForce.x, y:rotatedForce.y, z:rotatedForce.z)
         //die.physicsBody?.applyForce(vectorForce, asImpulse: true)
         
         // Apply force
-        //die.position = cameraNode?.position as! SCNVector3
         
         
-        //die.physicsBody?.applyForce(newForce, at: cameraNode!.position, asImpulse: true)
+        die.position = cameraNode?.position as! SCNVector3
+        
+        
+        
+        die.physicsBody?.applyForce(newForce, at: cameraNode!.position, asImpulse: true)
         
         
         //die.referenceNode1.position = die.position
@@ -264,13 +267,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         //print(grids.first!.boundingBox)
         //grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: box, options: nil))
+        
         grids.first?.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        
         //grids.first?.physicsBody?.categoryBitMask = 2
+        
+        
         grids.first?.physicsBody?.restitution = 0.262 // die bounce
         
         grids.first?.addChildNode(die)
         
-        die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0) // FIX THIS W MEASURED
         die.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
         
         die.referenceNode1.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
