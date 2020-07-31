@@ -12,7 +12,7 @@
 import UIKit
 import SceneKit
 import ARKit
-import RealityKit
+//import RealityKit
 import CoreMotion
 import Combine
 
@@ -24,6 +24,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     let queue = OperationQueue()
     let dieNodeName = "die"
     var grids = [Grid]()
+    
+    var dataframe: [(CMAcceleration, CMRotationRate)] = []
     
     //create dataframes
     
@@ -116,6 +118,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     print(deviceMotion?.rotationRate)
                     
                     // fill dataframes
+                    
+                    self.dataframe.append((deviceMotion!.userAcceleration, deviceMotion!.rotationRate))
                 }
                 
                 
@@ -197,17 +201,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // CLEAN BELOW THIS ALL RUNS AT THE END
         
+        // print dataframe
+        
+        print(dataframe)
+        
         let cameraNode = sceneView.pointOfView
         
         
         //print("Started")
         
-        print(cameraNode?.position)
+        print("Position: ", cameraNode?.position)
         
         // Setting up die shape and physics body
         
         let die = Die(anchor: grids.first!.anchor)
-        die.scale = SCNVector3(5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0, 5.0 * (grids.first?.anchor.extent.x)! / 100.0)
+        die.scale = SCNVector3(7.0 * (grids.first?.anchor.extent.x)! / 100.0, 7.0 * (grids.first?.anchor.extent.x)! / 100.0, 7.0 * (grids.first?.anchor.extent.x)! / 100.0)
         
         //die.position.y = die.position.y + 50.0
         
@@ -236,13 +244,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Force calculations
         
-        print(cameraNode?.worldFront)
+        print("Front: ", cameraNode?.worldFront)
         
         // 2
         //let original = SCNVector3(x: 0, y: 5.0, z: -1.0) // y between 4.0 and 6.0, z between -1 and -2?
         
         //let original = SCNVector3(x: 1.67, y: 13.83, z: -18.3)
-        let newForce = SCNVector3(1.1 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!) //AVERGAGE THESE WITH MEASURED VALUES?
+        let newForce = SCNVector3(1.5 * (cameraNode?.worldFront.x)!, 5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!) //AVERGAGE THESE WITH MEASURED VALUES?
         //let force = simd_make_float4(2.0 * (cameraNode?.worldFront.x)!,  5.0 + (cameraNode?.worldFront.y)!, (cameraNode?.worldFront.z)!, 0)
         //let rotatedForce = simd_mul(sceneView.session.currentFrame!.camera.transform, force)
 
@@ -251,12 +259,41 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Apply force
         
+        var count = 0
+        var totalX = 0.00
+        var maxZ = 0.00
+        var yIndex = 0
+        var maxY = 0.00
+        
+        for (accl, rot) in dataframe {
+            totalX += accl.x
+            
+            if (accl.z < maxZ) { maxZ = accl.z }
+            
+            if (accl.y > maxY) {
+                maxY = accl.y
+                yIndex = count
+            }
+            
+            count += 1
+        }
+        
+        let calcXForce = totalX / Double(dataframe.count)
+        let calcYForce = maxY * 3.0 //Double(yIndex / dataframe.count) *
+        let calcZForce = Double((cameraNode?.worldFront.z)! - Float(maxZ) / 0.5 * Float(dataframe.count))
+        
+        let calculatedForce = SCNVector3(Double(newForce.x), calcYForce, maxZ / 3.0)
+        
+        print("Calculated Force: ", "X: ", newForce.x, "Y: ", calculatedForce.y, "Z: ", maxZ / 1.2)
+        
+        print("Force: ", "X: ", newForce.x, "Y: ", newForce.y, "Z: ", newForce.z)
+        
         
         die.position = cameraNode?.position as! SCNVector3
         
         
         
-        die.physicsBody?.applyForce(newForce, at: cameraNode!.position, asImpulse: true)
+        die.physicsBody?.applyForce(calculatedForce, at: cameraNode!.position, asImpulse: true)
         
         
         //die.referenceNode1.position = die.position
@@ -277,11 +314,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         grids.first?.addChildNode(die)
         
-        die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0) // FIX THIS W MEASURED
-        die.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
+        //die.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0) // FIX THIS W MEASURED
+        die.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0); // Attitude
         
         die.referenceNode1.eulerAngles = SCNVector3Make(0, Float(7*Double.pi/8), 0);
-        die.referenceNode1.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
+        
+        print("Attitude: ", "X: ", die.referenceNode1.eulerAngles.x, "Y: ", die.referenceNode1.eulerAngles.y, "Z: ", die.referenceNode1.eulerAngles.z)
+        
+        //die.referenceNode1.rotation = SCNVector4(0.0, 30.0, 0.0, 69.0)
         
         if recognizer.state != .ended {
             print("Held")
@@ -291,7 +331,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         throwing = false
         
-        print(sceneView.pointOfView?.position)
+        dataframe = []
         
         // create method for math on dataframes, apply force
         
